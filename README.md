@@ -31,7 +31,8 @@ En este ejercicio se va a construir un modelo de clases para la capa lógica de 
 	Lo anterior requiere:
 
 * *Agregar las dependencias de Spring:*
-Veificamos en el pom tener las siguientes dependencias:
+  
+Verificamos en el pom tener las siguientes dependencias:
 
 ```
         <dependency>
@@ -208,7 +209,7 @@ Por último, realizamos los test en `InMemoryPersistenceTest` para los métodos 
 
 De los test implementados se obtiene el siguiente resultado:
 
-{Imagen resultado test}
+<img width="921" height="250" alt="image" src="https://github.com/user-attachments/assets/b54d784b-0845-40bb-82cf-ca9a77ffa64e" />
 
 
 *3. Haga un programa en el que cree (mediante Spring) una instancia de BlueprintServices, y rectifique la funcionalidad del mismo: registrar planos, consultar planos, registrar planos específicos, etc.*

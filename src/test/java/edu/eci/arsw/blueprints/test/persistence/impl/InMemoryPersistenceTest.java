@@ -12,6 +12,9 @@ import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.impl.InMemoryBlueprintPersistence;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -20,7 +23,9 @@ import static org.junit.Assert.*;
  * @author hcadavid
  */
 public class InMemoryPersistenceTest {
-    
+
+    private InMemoryBlueprintPersistence persistence;
+
     @Test
     public void saveNewAndLoadTest() throws BlueprintPersistenceException, BlueprintNotFoundException{
         InMemoryBlueprintPersistence ibpp=new InMemoryBlueprintPersistence();
@@ -65,10 +70,47 @@ public class InMemoryPersistenceTest {
         catch (BlueprintPersistenceException ex){
             
         }
-                
-        
     }
 
+    @Test
+    public void getBlueprintsByAuthorTest() throws BlueprintPersistenceException, BlueprintNotFoundException {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
 
-    
+        Point[] pts = new Point[]{new Point(10, 10), new Point(20, 20)};
+        Blueprint bp1 = new Blueprint("alice", "blueprint1", pts);
+        Blueprint bp2 = new Blueprint("alice", "blueprint2", pts);
+
+        ibpp.saveBlueprint(bp1);
+        ibpp.saveBlueprint(bp2);
+
+        Set<Blueprint> blueprints = ibpp.getBlueprintsByAuthor("alice");
+        assertEquals(2, blueprints.size());
+    }
+
+    @Test(expected = BlueprintNotFoundException.class)
+    public void getBlueprintsByNonexistentAuthorTest() throws BlueprintNotFoundException {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+        ibpp.getBlueprintsByAuthor("nonexistent_author");
+    }
+
+    @Test
+    public void getBlueprintTest() throws BlueprintPersistenceException, BlueprintNotFoundException {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+
+        Point[] pts = new Point[]{new Point(0, 0), new Point(40, 40)};
+        Blueprint bp = new Blueprint("bob", "house", pts);
+        ibpp.saveBlueprint(bp);
+
+        Blueprint found = ibpp.getBlueprint("bob", "house");
+
+        assertNotNull(found);
+        assertEquals("bob", found.getAuthor());
+        assertEquals("house", found.getName());
+    }
+
+    @Test(expected = BlueprintNotFoundException.class)
+    public void getNonexistentBlueprintTest() throws BlueprintNotFoundException {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+        ibpp.getBlueprint("bob", "does_not_exist");
+    }
 }

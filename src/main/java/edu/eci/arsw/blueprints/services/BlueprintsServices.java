@@ -10,6 +10,7 @@ import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintsPersistence;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,11 @@ public class BlueprintsServices {
      * @throws BlueprintNotFoundException if there is no such blueprint
      */
     public Blueprint getBlueprint(String author,String name) throws BlueprintNotFoundException{
-        throw new UnsupportedOperationException("Not supported yet."); 
+        Blueprint blueprint=bpp.getBlueprint(author,name);
+        if(blueprint==null){
+            throw new BlueprintNotFoundException("Blueprint not found");
+        }
+        return blueprint;
     }
     
     /**
@@ -51,7 +56,10 @@ public class BlueprintsServices {
      * @throws BlueprintNotFoundException if the given author doesn't exist
      */
     public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException{
-        throw new UnsupportedOperationException("Not supported yet."); 
+        Set<Blueprint> blueprints=bpp.getBlueprintsByAuthor(author);
+        if(blueprints==null || blueprints.isEmpty()){
+            throw new BlueprintNotFoundException("Blueprints not found by author");
+        }
+        return blueprints;
     }
-    
 }

@@ -214,10 +214,118 @@ De los test implementados se obtiene el siguiente resultado:
 
 *3. Haga un programa en el que cree (mediante Spring) una instancia de BlueprintServices, y rectifique la funcionalidad del mismo: registrar planos, consultar planos, registrar planos específicos, etc.*
 
+Se creó la clase `BlueprintsApp` que utiliza Spring para obtener una instancia de `BlueprintsServices` y permite registrar y consultar planos:
+
+```java
+		// Crear y registrar planos
+        Blueprint bp1 = new Blueprint("Sergio", "Casa",
+                new Point[] { new Point(0, 0), new Point(1, 1), new Point(1, 1), new Point(2, 2) });
+        Blueprint bp2 = new Blueprint("Sergio", "Parque",
+                new Point[] { new Point(0, 0), new Point(1, 1), new Point(2, 2), new Point(3, 3) });
+        bs.addNewBlueprint(bp1);
+        bs.addNewBlueprint(bp2);
+
+        // Consultar todos los planos
+        System.out.println("Todos los planos:");
+        for (Blueprint bp : bs.getAllBlueprints()) {
+            System.out.println(bp.getName() + ": " + pointsToString(bp));
+        }
+
+        // Consultar planos por autor
+        System.out.println("\nPlanos de Sergio:");
+        for (Blueprint bp : bs.getBlueprintsByAuthor("Sergio")) {
+            System.out.println(bp.getName() + ": " + pointsToString(bp));
+        }
+
+        // Consultar plano específico
+        System.out.println("\nPlano específico Casa:");
+        Blueprint casa = bs.getBlueprint("Sergio", "Casa");
+        System.out.println(casa.getName() + ": " + pointsToString(casa));
+    }
+```
+
+
+
 *4. Se quiere que las operaciones de consulta de planos realicen un proceso de filtrado, antes de retornar los planos consultados. Dichos filtros lo que buscan es reducir el tamaño de los planos, removiendo datos redundantes o simplemente submuestrando, antes de retornarlos. Ajuste la aplicación (agregando las abstracciones e implementaciones que considere) para que a la clase BlueprintServices se le inyecte uno de dos posibles 'filtros' (o eventuales futuros filtros). No se contempla el uso de más de uno a la vez:*
-	
+
+Se creó la interfaz BlueprintFilter y dos implementaciones:
+
+
 * *(A) Filtrado de redundancias: suprime del plano los puntos consecutivos que sean repetidos.*
+
+```java
+@Service
+@Primary
+public class RedundancyFilter implements BlueprintFilter {
+    @Override
+    public Blueprint filter(Blueprint bp) {
+        List<Point> points = bp.getPoints();
+        List<Point> filtered = new ArrayList<>();
+        if (!points.isEmpty()) {
+            filtered.add(points.get(0));
+            for (int i = 1; i < points.size(); i++) {
+                if (!points.get(i).equals(points.get(i - 1))) {
+                    filtered.add(points.get(i));
+                }
+            }
+        }
+        return new Blueprint(bp.getAuthor(), bp.getName(), filtered.toArray(new Point[0]));
+    }
+}
+```
+
 
 * *(B) Filtrado de submuestreo: suprime 1 de cada 2 puntos del plano, de manera intercalada.*
 
+```java
+@Service
+public class SubsamplingFilter implements BlueprintFilter {
+    @Override
+    public Blueprint filter(Blueprint bp) {
+        List<Point> points = bp.getPoints();
+        List<Point> filtered = new ArrayList<>();
+        for (int i = 0; i < points.size(); i += 2) {
+            filtered.add(points.get(i));
+        }
+        return new Blueprint(bp.getAuthor(), bp.getName(), filtered.toArray(new Point[0]));
+    }
+}
+```
+
+¿Qué se hizo?
+
+Se inyecta el filtro en `BlueprintsServices` usando Spring.
+Solo uno de los filtros se usa a la vez, controlado por la anotación `@Primary`.
+
+
 *5. Agrege las pruebas correspondientes a cada uno de estos filtros, y pruebe su funcionamiento en el programa de prueba, comprobando que sólo cambiando la posición de las anotaciones -sin cambiar nada más-, el programa retorne los planos filtrados de la manera (A) o de la manera (B).* 
+
+
+<img width="2879" height="560" alt="image" src="https://github.com/user-attachments/assets/c37106ba-b386-4d43-a468-e7ae67647c88" />
+
+Las pruebas unitarias desarrollas se encuentran en la clase `BlueprintFilterTest`:
+
+<img width="1011" height="425" alt="image" src="https://github.com/user-attachments/assets/f3a97e7f-c195-4861-9d00-28c07c90e982" />
+
+
+De acuerdo con la creación y registro de planos en `BlueprintsApp` que corresponde a los siguientes planos (incluyendo _bpname_ que se encontraba por defecto en el código inicial):
+
+```
+Parque: [(0,0), (1,1), (2,2), (3,3)]
+_bpname_: [(140,140), (115,115)]
+Casa: [(0,0), (1,1), (1,1), (2,2)]
+```
+
+Se procede a aplicar los filtros.
+
+Planos filtrados de manera A:
+
+<img width="2879" height="420" alt="image" src="https://github.com/user-attachments/assets/4cd7af24-e98a-433c-bfd0-04122f973c9f" />
+
+
+Planos filtrados de manera B:
+
+<img width="2558" height="419" alt="image" src="https://github.com/user-attachments/assets/c5289be9-6923-4d1d-9da6-af77da305cfc" />
+
+
+

@@ -14,6 +14,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,6 +28,7 @@ public class BlueprintsServices {
     BlueprintsPersistence bpp = null;
 
     @Autowired
+    @Qualifier("redundancyFilter")
     BlueprintFilter filter = null;
 
     public void addNewBlueprint(Blueprint bp) throws edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException {

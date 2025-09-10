@@ -1,7 +1,7 @@
 
 package edu.eci.arsw.blueprints.services.impl;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
@@ -9,7 +9,7 @@ import edu.eci.arsw.blueprints.services.BlueprintFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 public class SubsamplingFilter implements BlueprintFilter {
     @Override
     public Blueprint filter(Blueprint bp) {

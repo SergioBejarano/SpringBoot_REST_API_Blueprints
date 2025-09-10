@@ -1,10 +1,14 @@
 ## Escuela Colombiana de Ingeniería
+
 ## Arquitecturas de Software
 
-----
+---
+
 ### Integrantes
+
 - Sergio Andrés Bejarano Rodríguez
 - Laura Daniela Rodríguez Sánchez
+
 ---
 
 # Componentes y conectores - Parte I.
@@ -14,24 +18,26 @@ El ejercicio se debe traer terminado para el siguiente laboratorio (Parte II).
 ### Middleware- gestión de planos.
 
 ---
+
 #### Antes de hacer este ejercicio, realice [el ejercicio introductorio al manejo de Spring y la configuración basada en anotaciones](https://github.com/ARSW-ECI/Spring_LightweightCont_Annotation-DI_Example).
 
 Se realiza el ejercicio propuesto en el siguiente repositorio:
+
 ```
 https://github.com/LauraRo166/Taller_IntroductorioManejoSpring
 ```
 
 ---
 
-En este ejercicio se va a construir un modelo de clases para la capa lógica de una aplicación que permita gestionar planos arquitectónicos de una prestigiosa compañia de diseño. 
+En este ejercicio se va a construir un modelo de clases para la capa lógica de una aplicación que permita gestionar planos arquitectónicos de una prestigiosa compañia de diseño.
 
 ![](img/ClassDiagram1.png)
 
-*1. Configure la aplicación para que funcione bajo un esquema de inyección de dependencias, tal como se muestra en el diagrama anterior.*
-	Lo anterior requiere:
+_1. Configure la aplicación para que funcione bajo un esquema de inyección de dependencias, tal como se muestra en el diagrama anterior._
+Lo anterior requiere:
 
-* *Agregar las dependencias de Spring:*
-  
+- _Agregar las dependencias de Spring:_
+
 Verificamos en el pom tener las siguientes dependencias:
 
 ```
@@ -47,7 +53,7 @@ Verificamos en el pom tener las siguientes dependencias:
         </dependency>
 ```
 
-* *Agregar la configuración de Spring.*
+- _Agregar la configuración de Spring._
 
 Para agregar la configuración de Spring creamos el archivo `applicationContext.xml`, donde
 habilitamos `context:component-scan` para que Spring busque en el paquete `edu.eci.arsw.blueprints`
@@ -64,10 +70,11 @@ las clases anotadas como `@Component`, `@Service`, `@Repository` y `@Controller`
 ">
 
     <context:component-scan base-package="edu.eci.arsw.blueprints" />
-    
-</beans> 
+
+</beans>
 ```
-* *Configurar la aplicación -mediante anotaciones- para que el esquema de persistencia sea inyectado al momento de ser creado el bean 'BlueprintServices'.*
+
+- _Configurar la aplicación -mediante anotaciones- para que el esquema de persistencia sea inyectado al momento de ser creado el bean 'BlueprintServices'._
 
 En la clase `BlueprintServices` deben ir las siguientes anotaciones:
 
@@ -88,12 +95,13 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence {
 }
 ```
 
-*2. Complete los operaciones getBluePrint() y getBlueprintsByAuthor(). Implemente todo lo requerido de las capas inferiores (por ahora, el esquema de persistencia disponible 'InMemoryBlueprintPersistence') agregando las pruebas correspondientes en 'InMemoryPersistenceTest'.*
+_2. Complete los operaciones getBluePrint() y getBlueprintsByAuthor(). Implemente todo lo requerido de las capas inferiores (por ahora, el esquema de persistencia disponible 'InMemoryBlueprintPersistence') agregando las pruebas correspondientes en 'InMemoryPersistenceTest'._
 
 Empezamos implementando los métodos en la clase `BlueprintsServices`.
+
 ```java
     /**
-     * 
+     *
      * @param author blueprint's author
      * @param name blueprint's name
      * @return the blueprint of the given name created by the given author
@@ -106,9 +114,9 @@ Empezamos implementando los métodos en la clase `BlueprintsServices`.
         }
         return blueprint;
     }
-    
+
     /**
-     * 
+     *
      * @param author blueprint's author
      * @return all the blueprints of the given author
      * @throws BlueprintNotFoundException if the given author doesn't exist
@@ -121,7 +129,8 @@ Empezamos implementando los métodos en la clase `BlueprintsServices`.
         return blueprints;
     }
 ```
-Ahora en `BlueprintsPersistence` verificamos que se encuentra el método `getBlueprint` y 
+
+Ahora en `BlueprintsPersistence` verificamos que se encuentra el método `getBlueprint` y
 agregamos el método `getBlueprintsByAuthor`.
 
 ```java
@@ -139,10 +148,10 @@ Para terminar la implementación, implementamos el método `getBlueprintsByAutho
         if (blueprint == null){
             throw new BlueprintNotFoundException("The blueprint does not exist");
         }
-    
+
         return blueprint;
-    }    
-    
+    }
+
     @Override
     public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
         Set<Blueprint> result = new HashSet<>();
@@ -211,8 +220,7 @@ De los test implementados se obtiene el siguiente resultado:
 
 <img width="921" height="250" alt="image" src="https://github.com/user-attachments/assets/b54d784b-0845-40bb-82cf-ca9a77ffa64e" />
 
-
-*3. Haga un programa en el que cree (mediante Spring) una instancia de BlueprintServices, y rectifique la funcionalidad del mismo: registrar planos, consultar planos, registrar planos específicos, etc.*
+_3. Haga un programa en el que cree (mediante Spring) una instancia de BlueprintServices, y rectifique la funcionalidad del mismo: registrar planos, consultar planos, registrar planos específicos, etc._
 
 Se creó la clase `BlueprintsApp` que utiliza Spring para obtener una instancia de `BlueprintsServices` y permite registrar y consultar planos:
 
@@ -244,18 +252,14 @@ Se creó la clase `BlueprintsApp` que utiliza Spring para obtener una instancia 
     }
 ```
 
-
-
-*4. Se quiere que las operaciones de consulta de planos realicen un proceso de filtrado, antes de retornar los planos consultados. Dichos filtros lo que buscan es reducir el tamaño de los planos, removiendo datos redundantes o simplemente submuestrando, antes de retornarlos. Ajuste la aplicación (agregando las abstracciones e implementaciones que considere) para que a la clase BlueprintServices se le inyecte uno de dos posibles 'filtros' (o eventuales futuros filtros). No se contempla el uso de más de uno a la vez:*
+_4. Se quiere que las operaciones de consulta de planos realicen un proceso de filtrado, antes de retornar los planos consultados. Dichos filtros lo que buscan es reducir el tamaño de los planos, removiendo datos redundantes o simplemente submuestrando, antes de retornarlos. Ajuste la aplicación (agregando las abstracciones e implementaciones que considere) para que a la clase BlueprintServices se le inyecte uno de dos posibles 'filtros' (o eventuales futuros filtros). No se contempla el uso de más de uno a la vez:_
 
 Se creó la interfaz BlueprintFilter y dos implementaciones:
 
-
-* *(A) Filtrado de redundancias: suprime del plano los puntos consecutivos que sean repetidos.*
+- _(A) Filtrado de redundancias: suprime del plano los puntos consecutivos que sean repetidos._
 
 ```java
-@Service
-@Primary
+@Component
 public class RedundancyFilter implements BlueprintFilter {
     @Override
     public Blueprint filter(Blueprint bp) {
@@ -274,11 +278,10 @@ public class RedundancyFilter implements BlueprintFilter {
 }
 ```
 
-
-* *(B) Filtrado de submuestreo: suprime 1 de cada 2 puntos del plano, de manera intercalada.*
+- _(B) Filtrado de submuestreo: suprime 1 de cada 2 puntos del plano, de manera intercalada._
 
 ```java
-@Service
+@Component
 public class SubsamplingFilter implements BlueprintFilter {
     @Override
     public Blueprint filter(Blueprint bp) {
@@ -295,18 +298,21 @@ public class SubsamplingFilter implements BlueprintFilter {
 ¿Qué se hizo?
 
 Se inyecta el filtro en `BlueprintsServices` usando Spring.
-Solo uno de los filtros se usa a la vez, controlado por la anotación `@Primary`.
+Solo uno de los filtros se usa a la vez, controlado por la anotación `@Qualifier`.
 
+```java
+@Autowired
+    @Qualifier("redundancyFilter")
+    BlueprintFilter filter = null;
+```
 
-*5. Agrege las pruebas correspondientes a cada uno de estos filtros, y pruebe su funcionamiento en el programa de prueba, comprobando que sólo cambiando la posición de las anotaciones -sin cambiar nada más-, el programa retorne los planos filtrados de la manera (A) o de la manera (B).* 
-
+_5. Agrege las pruebas correspondientes a cada uno de estos filtros, y pruebe su funcionamiento en el programa de prueba, comprobando que sólo cambiando la posición de las anotaciones -sin cambiar nada más-, el programa retorne los planos filtrados de la manera (A) o de la manera (B)._
 
 <img width="2879" height="560" alt="image" src="https://github.com/user-attachments/assets/c37106ba-b386-4d43-a468-e7ae67647c88" />
 
 Las pruebas unitarias desarrollas se encuentran en la clase `BlueprintFilterTest`:
 
 <img width="1011" height="425" alt="image" src="https://github.com/user-attachments/assets/f3a97e7f-c195-4861-9d00-28c07c90e982" />
-
 
 De acuerdo con la creación y registro de planos en `BlueprintsApp` que corresponde a los siguientes planos (incluyendo _bpname_ que se encontraba por defecto en el código inicial):
 
@@ -322,10 +328,6 @@ Planos filtrados de manera A:
 
 <img width="2879" height="420" alt="image" src="https://github.com/user-attachments/assets/4cd7af24-e98a-433c-bfd0-04122f973c9f" />
 
-
 Planos filtrados de manera B:
 
 <img width="2558" height="419" alt="image" src="https://github.com/user-attachments/assets/c5289be9-6923-4d1d-9da6-af77da305cfc" />
-
-
-

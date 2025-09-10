@@ -1,17 +1,15 @@
 
 package edu.eci.arsw.blueprints.services.impl;
 
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
-
 import edu.eci.arsw.blueprints.model.Blueprint;
 import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.services.BlueprintFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-@Primary
+import org.springframework.stereotype.Component;
+
+@Component
 public class RedundancyFilter implements BlueprintFilter {
     @Override
     public Blueprint filter(Blueprint bp) {

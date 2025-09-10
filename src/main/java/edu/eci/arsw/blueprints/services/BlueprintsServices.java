@@ -22,44 +22,56 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BlueprintsServices {
-   
+
     @Autowired
-    BlueprintsPersistence bpp=null;
-    
-    public void addNewBlueprint(Blueprint bp){
-        
+    BlueprintsPersistence bpp = null;
+
+    @Autowired
+    BlueprintFilter filter = null;
+
+    public void addNewBlueprint(Blueprint bp) throws edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException {
+        bpp.saveBlueprint(bp);
     }
-    
-    public Set<Blueprint> getAllBlueprints(){
-        return null;
+
+    public Set<Blueprint> getAllBlueprints() {
+        Set<Blueprint> blueprints = bpp.getAllBlueprints();
+        Set<Blueprint> filtered = new LinkedHashSet<>();
+        for (Blueprint bp : blueprints) {
+            filtered.add(filter.filter(bp));
+        }
+        return filtered;
     }
-    
+
     /**
      * 
      * @param author blueprint's author
-     * @param name blueprint's name
+     * @param name   blueprint's name
      * @return the blueprint of the given name created by the given author
      * @throws BlueprintNotFoundException if there is no such blueprint
      */
-    public Blueprint getBlueprint(String author,String name) throws BlueprintNotFoundException{
-        Blueprint blueprint=bpp.getBlueprint(author,name);
-        if(blueprint==null){
+    public Blueprint getBlueprint(String author, String name) throws BlueprintNotFoundException {
+        Blueprint blueprint = bpp.getBlueprint(author, name);
+        if (blueprint == null) {
             throw new BlueprintNotFoundException("Blueprint not found");
         }
-        return blueprint;
+        return filter.filter(blueprint);
     }
-    
+
     /**
      * 
      * @param author blueprint's author
      * @return all the blueprints of the given author
      * @throws BlueprintNotFoundException if the given author doesn't exist
      */
-    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException{
-        Set<Blueprint> blueprints=bpp.getBlueprintsByAuthor(author);
-        if(blueprints==null || blueprints.isEmpty()){
+    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
+        Set<Blueprint> blueprints = bpp.getBlueprintsByAuthor(author);
+        if (blueprints == null || blueprints.isEmpty()) {
             throw new BlueprintNotFoundException("Blueprints not found by author");
         }
-        return blueprints;
+        Set<Blueprint> filtered = new LinkedHashSet<>();
+        for (Blueprint bp : blueprints) {
+            filtered.add(filter.filter(bp));
+        }
+        return filtered;
     }
 }

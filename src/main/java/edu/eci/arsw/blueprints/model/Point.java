@@ -10,7 +10,7 @@ package edu.eci.arsw.blueprints.model;
  * @author hcadavid
  */
 public class Point {
-   
+
     private int x;
     private int y;
 
@@ -20,8 +20,23 @@ public class Point {
     }
 
     public Point() {
-    }    
-    
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        Point point = (Point) obj;
+        return x == point.x && y == point.y;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * x + y;
+    }
+
     public int getX() {
         return x;
     }
@@ -37,7 +52,5 @@ public class Point {
     public void setY(int y) {
         this.y = y;
     }
-    
-    
-    
+
 }

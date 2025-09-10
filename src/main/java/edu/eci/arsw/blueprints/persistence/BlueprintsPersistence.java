@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.eci.arsw.blueprints.persistence;
 
 import edu.eci.arsw.blueprints.model.Blueprint;
-
 import java.util.Set;
 
 /**
@@ -18,8 +12,10 @@ public interface BlueprintsPersistence {
     /**
      *
      * @param bp the new blueprint
-     * @throws BlueprintPersistenceException if a blueprint with the same name already exists,
-     *                                       or any other low-level persistence error occurs.
+     * @throws BlueprintPersistenceException if a blueprint with the same name
+     *                                       already exists,
+     *                                       or any other low-level persistence
+     *                                       error occurs.
      */
     public void saveBlueprint(Blueprint bp) throws BlueprintPersistenceException;
 
@@ -34,9 +30,14 @@ public interface BlueprintsPersistence {
 
     /**
      *
-     * @param author     blueprint's author
+     * @param author blueprint's author
      * @return the blueprints of the given author
      * @throws BlueprintNotFoundException if there is no such blueprints
      */
     public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException;
+
+    /**
+     * @return all blueprints in the system
+     */
+    public Set<Blueprint> getAllBlueprints();
 }
